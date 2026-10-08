@@ -1,0 +1,57 @@
+name: Terraform
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: '1.15.8'
+          terraform_wrapper: false
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false -input=false
+      - run: terraform validate -no-color
+  plan:
+    needs: validate
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && vars.TERRAFORM_CI_ENABLED == 'true'
+    permissions:
+      contents: read
+      id-token: write
+    uses: tyler180/github-workflows/.github/workflows/terraform-plan.yml@36b3b8fb274b08b7f816689082c369f424cd27b1
+    with:
+      working-directory: '.'
+      terraform-version: '1.15.8'
+      aws-region: us-west-2
+      plan-role-arn: ${{ vars.TERRAFORM_PLAN_ROLE_ARN }}
+      state-id: github-infra
+    secrets:
+      terraform-github-token: ${{ secrets.TERRAFORM_GITHUB_PLAN_TOKEN }}
+  deploy:
+    needs: validate
+    if: vars.TERRAFORM_CI_ENABLED == 'true' && github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && vars.TERRAFORM_AUTO_DEPLOY == 'true'))
+    permissions:
+      contents: read
+      id-token: write
+    uses: tyler180/github-workflows/.github/workflows/terraform-deploy.yml@36b3b8fb274b08b7f816689082c369f424cd27b1
+    with:
+      working-directory: '.'
+      terraform-version: '1.15.8'
+      aws-region: us-west-2
+      plan-role-arn: ${{ vars.TERRAFORM_PLAN_ROLE_ARN }}
+      apply-role-arn: ${{ vars.TERRAFORM_APPLY_ROLE_ARN }}
+      state-id: github-infra
+      environment: terraform-production
+    secrets:
+      terraform-github-token: ${{ secrets.TERRAFORM_GITHUB_PLAN_TOKEN }}
+      apply-terraform-github-token: ${{ secrets.TERRAFORM_GITHUB_APPLY_TOKEN }}
