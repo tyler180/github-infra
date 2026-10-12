@@ -22,7 +22,7 @@ GitHub repositories. S3 backend access does not itself need an AWS provider reso
 ## Manual pilot deployment
 
 .github/workflows/deploy-repositories.yml calls the create-stage shared workflow
-at immutable release v2.1.0-rc.2. It must be reviewed
+at immutable release v2.1.0-rc.3. It must be reviewed
 and published on main before manual dispatch. Planning reads the S3 backend and
 uses TF_GITHUB_PLAN_TOKEN. Apply requires production approval and uses the
 production TF_GITHUB_APPLY_TOKEN. It then verifies GitHub settings and advances
@@ -45,7 +45,7 @@ success does not establish permission to create repositories with the apply PAT.
 | Component | Release | Resolved commit |
 | --- | --- | --- |
 | Module | [v0.1.0-rc.2](https://github.com/tyler180/github-module/releases/tag/v0.1.0-rc.2) | `5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3` |
-| Workflows and trusted policy | [v2.1.0-rc.2](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.2) | `6d65f20f71108c21bab49139e9c8ee13fc749053` |
+| Workflows and trusted policy | [v2.1.0-rc.3](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.3) | `6cfe1a724fbc1612e300cf321ae0bf6c73ce8ee6` |
 
 Configuration uses these actual version tags. GitHub marks both releases immutable,
 so published tags cannot be moved. The policy runner resolves the workflow release
