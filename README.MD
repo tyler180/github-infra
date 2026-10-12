@@ -22,7 +22,7 @@ GitHub repositories. S3 backend access does not itself need an AWS provider reso
 ## Manual pilot deployment
 
 .github/workflows/deploy-repositories.yml calls the create-stage shared workflow
-at immutable commit e6f31f020449bd08945191ebfddb866432ad9a3e. It must be reviewed
+at immutable commit f5bf6fc59f8954d357e3081ae888ce03a1cec63f. It must be reviewed
 and published on main before manual dispatch. Planning reads the S3 backend and
 uses TF_GITHUB_PLAN_TOKEN. Apply requires production approval and uses the
 production TF_GITHUB_APPLY_TOKEN. It then verifies GitHub settings and advances
