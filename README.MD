@@ -22,7 +22,7 @@ GitHub repositories. S3 backend access does not itself need an AWS provider reso
 ## Manual pilot deployment
 
 .github/workflows/deploy-repositories.yml calls the create-stage shared workflow
-at immutable release v2.1.0-rc.3. It must be reviewed
+at immutable release v2.1.0-rc.4. It must be reviewed
 and published on main before manual dispatch. Planning reads the S3 backend and
 uses TF_GITHUB_PLAN_TOKEN. Apply requires production approval and uses the
 production TF_GITHUB_APPLY_TOKEN. It then verifies GitHub settings and advances
@@ -45,7 +45,7 @@ success does not establish permission to create repositories with the apply PAT.
 | Component | Release | Resolved commit |
 | --- | --- | --- |
 | Module | [v0.1.0-rc.2](https://github.com/tyler180/github-module/releases/tag/v0.1.0-rc.2) | `5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3` |
-| Workflows and trusted policy | [v2.1.0-rc.3](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.3) | `6cfe1a724fbc1612e300cf321ae0bf6c73ce8ee6` |
+| Workflows and trusted policy | [v2.1.0-rc.4](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.4) | `c4dd516bd13a7e6948322fafddcc6682c45f953c` |
 
 Configuration uses these actual version tags. GitHub marks both releases immutable,
 so published tags cannot be moved. The policy runner resolves the workflow release
@@ -66,3 +66,12 @@ terraform providers lock -platform=linux_amd64 -platform=darwin_arm64
 ```
 
 Review and commit the resulting lock-file change before running deployment.
+
+## Recover the completed pilot apply
+
+Run Recover pilot accepted record on main and approve production. This one-time
+workflow verifies successful apply run 38320705436, repository ID 1416221483, the
+original source and persisted state, and actual GitHub settings before creating
+the missing initial accepted record. It runs no Terraform commands and does not
+overwrite an existing accepted record. Run it before another pilot deployment;
+ordinary deployment intentionally rejects adoption of an unrecorded repository.
