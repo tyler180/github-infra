@@ -1,0 +1,16 @@
+name: Recover pilot accepted record
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+jobs:
+  recover:
+    uses: tyler180/github-workflows/.github/workflows/repository-create-recover.yml@v2.1.0-rc.4
+    with:
+      trusted-policy-ref: v2.1.0-rc.4
+      apply-role-arn: ${{ vars.TF_AWS_APPLY_ROLE_ARN }}
+      record-writer-role-arn: ${{ vars.TF_AWS_RECORD_WRITER_ROLE_ARN }}
+    secrets:
+      TF_GITHUB_APPLY_TOKEN: ${{ secrets.TF_GITHUB_APPLY_TOKEN }}
