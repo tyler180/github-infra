@@ -1,0 +1,16 @@
+name: Deploy repository pilot
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  deploy:
+    uses: tyler180/github-workflows/.github/workflows/repository-create-deploy.yml@e6f31f020449bd08945191ebfddb866432ad9a3e
+    with:
+      trusted-policy-ref: e6f31f020449bd08945191ebfddb866432ad9a3e
+      apply-role-arn: ${{ vars.TF_AWS_APPLY_ROLE_ARN }}
+      record-writer-role-arn: ${{ vars.TF_AWS_RECORD_WRITER_ROLE_ARN }}
+    secrets:
+      TF_GITHUB_PLAN_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
+      TF_GITHUB_APPLY_TOKEN: ${{ secrets.TF_GITHUB_APPLY_TOKEN }}

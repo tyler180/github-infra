@@ -1,87 +1,69 @@
-module "dynasty_ff_frontend" {
-  source  = "cloudposse/repository/github"
-  version = "0.2.1"
-
-  name        = "dynasty-ff-frontend"
-  description = "Frontend application for the Dynasty FF platform"
-
-  visibility = "public"
-
-  default_branch = "main"
-
-  has_issues      = true
-  has_projects    = false
-  has_wiki        = false
-  has_discussions = false
-
-  delete_branch_on_merge = true
-
-  allow_merge_commit = false
-  allow_rebase_merge = true
-  allow_squash_merge = true
-
-  enable_vulnerability_alerts = true
-  squash_merge_commit_message = "COMMIT_MESSAGES"
-
-  variables = {
-    NEXT_PUBLIC_OIDC_ISSUER    = "https://auth.k8s.749rmw.com/application/o/dynasty-ff/"
-    NEXT_PUBLIC_OIDC_CLIENT_ID = "dynasty-ff-frontend"
-    NEXT_PUBLIC_API_BASE_URL   = "https://5y8s0du210.execute-api.us-west-2.amazonaws.com"
-    NEXT_PUBLIC_LEAGUE_SEASON  = "2026"
-    NEXT_PUBLIC_LEAGUE_ID      = "79286"
-    NEXT_PUBLIC_FRANCHISE_ID   = "0005"
-  }
-
-  topics = [
-    "typescript",
-    "nextjs",
-    "docker",
-    "github-actions",
-  ]
-
-  rulesets = local.default_repository_rulesets
+locals {
+  inventory = jsondecode(file("${path.module}/${var.inventory_file}"))
+  stages    = ["create", "bootstrap", "verify", "protect", "grant"]
 }
 
-module "dynasty_ff_backend" {
-  source  = "cloudposse/repository/github"
-  version = "0.2.1"
-
-  name        = "dynasty-ff-backend"
-  description = "Frontend application for the Dynasty FF platform"
-
-  visibility = "public"
-
-  default_branch = "main"
-
-  has_issues      = true
-  has_projects    = false
-  has_wiki        = false
-  has_discussions = false
-
-  delete_branch_on_merge = true
-
-  allow_merge_commit = false
-  allow_rebase_merge = true
-  allow_squash_merge = true
-
-  enable_vulnerability_alerts = true
-  squash_merge_commit_message = "COMMIT_MESSAGES"
-
-  variables = {
-    NEXT_PUBLIC_OIDC_ISSUER    = "https://auth.k8s.749rmw.com/application/o/dynasty-ff/"
-    NEXT_PUBLIC_OIDC_CLIENT_ID = "dynasty-ff-frontend"
-    NEXT_PUBLIC_API_BASE_URL   = "https://5y8s0du210.execute-api.us-west-2.amazonaws.com"
-    NEXT_PUBLIC_LEAGUE_SEASON  = "2026"
-    TF_VAR_LEAGUE_ID           = "79286"
-    TF_VAR_FRANCHISE_ID        = "0005"
+# No provider operations: this is a structural guard, not historical proof.
+resource "terraform_data" "contract" {
+  input = local.inventory
+  lifecycle {
+    precondition {
+      condition     = local.inventory.schema_version == 1 && alltrue([for repo in values(local.inventory.repositories) : contains(local.stages, repo.stage)])
+      error_message = "Use inventory schema 1 and a recognized onboarding stage."
+    }
+    precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
+        !contains(["protect", "grant"], repo.stage) || try(length(repo.required_checks) > 0, false)
+      ])
+      error_message = "Protect/grant requires a configured deterministic check contract."
+    }
+    precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
+        length(setintersection(toset(keys(try(repo.provisioning_teams, {}))), toset(keys(try(repo.developer_teams, {}))))) == 0
+      ])
+      error_message = "Provisioning and developer team identities must be disjoint."
+    }
   }
+}
 
-  topics = [
-    "typescript",
-    "nextjs",
-    "docker",
-    "github-actions",
-  ]
+module "repositories" {
+  for_each = local.inventory.repositories
+  source   = "git::https://github.com/tyler180/github-module.git?ref=5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3"
 
-  rulesets = local.default_repository_rulesets
+  name                   = each.value.name
+  initialization         = try(each.value.initialization, "basic")
+  template               = try(each.value.template, null)
+  description            = try(each.value.description, "")
+  homepage_url           = try(each.value.homepage_url, "")
+  topics                 = try(each.value.topics, [])
+  visibility             = try(each.value.visibility, "private")
+  merge_methods          = try(each.value.merge_methods, ["squash"])
+  delete_branch_on_merge = try(each.value.delete_branch_on_merge, true)
+  allow_auto_merge       = try(each.value.allow_auto_merge, false)
+  allow_update_branch    = try(each.value.allow_update_branch, true)
+  features               = try(each.value.features, {})
+  archived               = try(each.value.archived, false)
+  default_branch         = try(each.value.default_branch, null)
+  rename_default_branch  = try(each.value.rename_default_branch, false)
+  actions_policy         = try(each.value.actions_policy, null)
+  workflow_permissions   = try(each.value.workflow_permissions, null)
+  team_permissions = merge(
+    try(each.value.provisioning_teams, {}),
+    each.value.stage == "grant" ? try(each.value.developer_teams, {}) : {}
+  )
+  # Do not require private-repository ruleset entitlement during initial creation.
+  # Protection is an explicit later stage after account capability verification.
+  repository_ruleset = contains(["protect", "grant"], each.value.stage) ? {
+    enforcement     = "active"
+    required_checks = try(each.value.required_checks, {})
+  } : null
+  depends_on = [terraform_data.contract]
+}
+
+output "repositories" {
+  value = { for key, repo in module.repositories : key => {
+    repository_id = repo.repository_id
+    full_name     = repo.full_name
+    html_url      = repo.html_url
+  } }
 }
