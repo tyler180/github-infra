@@ -52,3 +52,17 @@ so published tags cannot be moved. The policy runner resolves the workflow relea
 to its commit and records both values in deployment receipts. For upgrades, review
 the release and update the workflow and trusted-policy versions together. These
 releases remain candidates until the live pilot completes.
+
+## Provider checksums across platforms
+
+The committed provider lock file includes verified package hashes for both
+linux_amd64 (Actions) and darwin_arm64 (local development). Validation and
+deployment initialize with -lockfile=readonly so CI cannot silently repair an
+incomplete lock file. When intentionally updating providers, regenerate the
+platform hashes with:
+
+```sh
+terraform providers lock -platform=linux_amd64 -platform=darwin_arm64
+```
+
+Review and commit the resulting lock-file change before running deployment.

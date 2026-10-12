@@ -5,6 +5,6 @@ cd "$(dirname "$0")/.."
 export GITHUB_TOKEN='' GH_TOKEN='' AWS_ACCESS_KEY_ID='' AWS_SECRET_ACCESS_KEY='' AWS_SESSION_TOKEN=''
 export AWS_EC2_METADATA_DISABLED=true
 terraform fmt -check -recursive
-terraform init -backend=false -input=false
+terraform init -backend=false -input=false -lockfile=readonly
 terraform validate -no-color
 terraform test -no-color
