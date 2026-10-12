@@ -39,3 +39,15 @@ and integration. Production approval does not override those restrictions.
 The separate verify-deployment-access workflow tests OIDC and S3 permissions,
 retaining a small access-test probe. It performs no Terraform apply. Access-test
 success does not establish permission to create repositories with the apply PAT.
+
+## Version names
+
+| Component | Release | Pinned commit |
+| --- | --- | --- |
+| Module | [v0.1.0-rc.1](https://github.com/tyler180/github-module/releases/tag/v0.1.0-rc.1) | `5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3` |
+| Workflows and trusted policy | [v2.1.0-rc.1](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.1) | `f5bf6fc59f8954d357e3081ae888ce03a1cec63f` |
+
+Configuration comments identify the readable version; execution remains pinned
+to its commit. For upgrades, review the release, update the SHA and label together,
+and keep the workflow and trusted-policy revisions identical. These releases are
+candidates until the live pilot completes.
