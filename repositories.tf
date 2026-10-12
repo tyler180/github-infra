@@ -28,8 +28,7 @@ resource "terraform_data" "contract" {
 
 module "repositories" {
   for_each = local.inventory.repositories
-  # github-module v0.1.0-rc.1 (immutable release commit)
-  source = "git::https://github.com/tyler180/github-module.git?ref=5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3"
+  source   = "git::https://github.com/tyler180/github-module.git?ref=v0.1.0-rc.2"
 
   name                   = each.value.name
   initialization         = try(each.value.initialization, "basic")

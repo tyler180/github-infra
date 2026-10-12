@@ -7,8 +7,8 @@ repository has been created by this local configuration work.
 
 ## Local development and validation
 
-repositories.tf calls git::https://github.com/tyler180/github-module.git at verified
-published commit 5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3. Local validation and CI
+repositories.tf calls git::https://github.com/tyler180/github-module.git at immutable
+release v0.1.0-rc.2. Local validation and CI
 use that same immutable source; no sibling checkout is required. Review and update
 the module ref when publishing a new version. Uncommitted module edits are not
 included in this pin.
@@ -22,7 +22,7 @@ GitHub repositories. S3 backend access does not itself need an AWS provider reso
 ## Manual pilot deployment
 
 .github/workflows/deploy-repositories.yml calls the create-stage shared workflow
-at immutable commit f5bf6fc59f8954d357e3081ae888ce03a1cec63f. It must be reviewed
+at immutable release v2.1.0-rc.2. It must be reviewed
 and published on main before manual dispatch. Planning reads the S3 backend and
 uses TF_GITHUB_PLAN_TOKEN. Apply requires production approval and uses the
 production TF_GITHUB_APPLY_TOKEN. It then verifies GitHub settings and advances
@@ -42,12 +42,13 @@ success does not establish permission to create repositories with the apply PAT.
 
 ## Version names
 
-| Component | Release | Pinned commit |
+| Component | Release | Resolved commit |
 | --- | --- | --- |
-| Module | [v0.1.0-rc.1](https://github.com/tyler180/github-module/releases/tag/v0.1.0-rc.1) | `5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3` |
-| Workflows and trusted policy | [v2.1.0-rc.1](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.1) | `f5bf6fc59f8954d357e3081ae888ce03a1cec63f` |
+| Module | [v0.1.0-rc.2](https://github.com/tyler180/github-module/releases/tag/v0.1.0-rc.2) | `5bc0ee4d295f5f85fa4b5f25788240b7ae6df8a3` |
+| Workflows and trusted policy | [v2.1.0-rc.2](https://github.com/tyler180/github-workflows/releases/tag/v2.1.0-rc.2) | `6d65f20f71108c21bab49139e9c8ee13fc749053` |
 
-Configuration comments identify the readable version; execution remains pinned
-to its commit. For upgrades, review the release, update the SHA and label together,
-and keep the workflow and trusted-policy revisions identical. These releases are
-candidates until the live pilot completes.
+Configuration uses these actual version tags. GitHub marks both releases immutable,
+so published tags cannot be moved. The policy runner resolves the workflow release
+to its commit and records both values in deployment receipts. For upgrades, review
+the release and update the workflow and trusted-policy versions together. These
+releases remain candidates until the live pilot completes.

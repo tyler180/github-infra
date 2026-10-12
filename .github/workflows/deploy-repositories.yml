@@ -6,9 +6,9 @@ permissions:
   id-token: write
 jobs:
   deploy:
-    uses: tyler180/github-workflows/.github/workflows/repository-create-deploy.yml@f5bf6fc59f8954d357e3081ae888ce03a1cec63f # v2.1.0-rc.1
+    uses: tyler180/github-workflows/.github/workflows/repository-create-deploy.yml@v2.1.0-rc.2
     with:
-      trusted-policy-ref: f5bf6fc59f8954d357e3081ae888ce03a1cec63f # v2.1.0-rc.1
+      trusted-policy-ref: v2.1.0-rc.2
       apply-role-arn: ${{ vars.TF_AWS_APPLY_ROLE_ARN }}
       record-writer-role-arn: ${{ vars.TF_AWS_RECORD_WRITER_ROLE_ARN }}
     secrets:
