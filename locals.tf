@@ -1,4 +1,29 @@
 locals {
+  name            = data.context_label.this.rendered
+  deployment_name = "${local.name}-deploy"
+
+  github_username = "tyler180@15354990"
+
+  github_actions_repositories = {
+    dynasty-ff-backend = {
+      repository_id = "1330281987"
+    }
+
+    dynasty-ff-models = {
+      repository_id = "1331226573"
+    }
+  }
+
+  deployment_accounts = {
+    dev  = "138013422358"
+    prod = "168076893860"
+  }
+
+  deployment_role_arns = [
+    for account_id in values(local.deployment_accounts) :
+    "arn:aws:iam::${account_id}:role/${local.deployment_name}"
+  ]
+
   default_repository_rulesets = {
     main = {
       name        = "main"
@@ -26,4 +51,6 @@ locals {
       }
     }
   }
+
+  tags = data.context_tags.this.tags
 }
