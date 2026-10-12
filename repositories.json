@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "pilot": {
+      "name": "github-module-pilot",
+      "description": "Disposable pilot for the GitHub repository Terraform module.",
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "basic",
+      "default_branch": "main",
+      "rename_default_branch": true,
+      "topics": [
+        "terraform",
+        "platform-engineering",
+        "pilot"
+      ],
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {}
+    }
+  }
+}
