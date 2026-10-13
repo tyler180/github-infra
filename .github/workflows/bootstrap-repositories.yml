@@ -11,3 +11,5 @@ jobs:
     uses: tyler180/github-workflows/.github/workflows/repository-bootstrap.yml@c72458b2abee991bff1026e3248b70759d080278
     with:
       automation-sha: c72458b2abee991bff1026e3248b70759d080278
+    secrets:
+      TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}
