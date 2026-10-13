@@ -11,7 +11,7 @@ are never overwritten.
 For an already created repository such as example-go-pilot, run **Bootstrap
 existing repository profiles** on main. It opens the same bootstrap PR without
 Terraform apply. The production environment requires TF_GITHUB_BOOTSTRAP_TOKEN
-with Contents, Workflows and Pull requests write and Administration, Checks and Actions read.
+with Contents, Workflows and Pull requests write and Administration and Actions read.
 
 The profile pins exact reviewed starter/workflow/hook revisions. Other language
 profiles are not supported yet. Leave stage=create until later live stage
