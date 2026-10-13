@@ -25,8 +25,9 @@ resolution verifies release immutability, unwraps annotated tags and requires th
 resolved commit to match this automation version's approved sources. Terraform
 validates syntax offline; it cannot attest release immutability.
 
-The current workflow/hook refs use `v2.2.0-rc.1`. The approved source commit has no
-published release, so source_ref retains its SHA until that revision receives an
-immutable release. No release is created by configuration validation. Provenance
+The source ref uses `v0.1.0-rc.3`, workflow/hook refs use `v2.2.0-rc.1`, and the
+bootstrap workflow caller uses `v2.3.0-rc.1` with automation-ref. These releases
+must be published immutably before this configuration is merged. No release is
+created by configuration validation. Provenance
 records requested refs and resolved commits. Changing a SHA to an equivalent
 release preserves the existing bootstrap fingerprint and developer files.

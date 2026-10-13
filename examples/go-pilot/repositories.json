@@ -21,7 +21,7 @@
         "go_version": "1.26.5",
         "code_owner": "tyler180",
         "go_module": "github.com/tyler180/example-go-pilot",
-        "source_ref": "6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32",
+        "source_ref": "v0.1.0-rc.3",
         "workflow_ref": "v2.2.0-rc.1",
         "hook_ref": "v2.2.0-rc.1"
       }

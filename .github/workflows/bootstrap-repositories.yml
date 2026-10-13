@@ -8,8 +8,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    uses: tyler180/github-workflows/.github/workflows/repository-bootstrap.yml@05f1ee3dbe827c6e0812e7c61047c2a1120580eb
+    uses: tyler180/github-workflows/.github/workflows/repository-bootstrap.yml@v2.3.0-rc.1
     with:
-      automation-sha: 05f1ee3dbe827c6e0812e7c61047c2a1120580eb
+      automation-ref: v2.3.0-rc.1
     secrets:
       TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}
