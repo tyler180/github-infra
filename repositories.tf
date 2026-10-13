@@ -8,6 +8,25 @@ resource "terraform_data" "contract" {
   input = local.inventory
   lifecycle {
     precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
+        try(repo.profile, null) == null ? true : try(repo.profile == "go" && repo.stage == "create" && repo.initialization == "basic" && repo.visibility == "private" && repo.default_branch == "main", false)
+      ])
+      error_message = "The Go profile currently requires create stage, basic initialization, private visibility and main."
+    }
+    precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
+        try(repo.profile, null) == null ? true : try(
+          toset(keys(repo.bootstrap)) == toset(["source_sha", "workflow_sha", "hook_sha", "go_version", "code_owner", "go_module"]) &&
+          repo.bootstrap.source_sha == "6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32" &&
+          repo.bootstrap.workflow_sha == "0ecbb0fcaea1deb8a8617a51d719b821500e873f" &&
+          repo.bootstrap.hook_sha == "0ecbb0fcaea1deb8a8617a51d719b821500e873f" &&
+          can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", repo.bootstrap.go_version)) &&
+          can(regex("^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)?$", repo.bootstrap.code_owner)) &&
+        repo.bootstrap.go_module == "github.com/${var.github_owner}/${repo.name}", false)
+      ])
+      error_message = "Go bootstrap requires approved source/workflow/hook pins, an explicit Go patch version, authorized code owner and matching module path."
+    }
+    precondition {
       condition     = local.inventory.schema_version == 1 && alltrue([for repo in values(local.inventory.repositories) : contains(local.stages, repo.stage)])
       error_message = "Use inventory schema 1 and a recognized onboarding stage."
     }

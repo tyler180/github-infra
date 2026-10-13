@@ -87,3 +87,36 @@ deployment workflow. Example entries are not part of the deployed inventory.
 Before shared planning starts, the deployment caller runs the read-only pilot settings preflight. A successful GET alone is insufficient: the response must include all merge settings, including actual false values. Missing, null, or malformed settings fail before Terraform can interpret them as false drift. This preflight currently covers the existing github-module-pilot; complete inventory-wide capability checks remain a shared-platform follow-up.
 
 The fine-grained planning PAT with Administration read access omitted merge settings during the live diagnostic. Administration write access is being verified as the narrow workaround; the credential therefore has write capability even though planning and diagnostics perform reads. Keep it confined to trusted workflows, retain the separate production apply credential, and do not describe it as a read-only credential. No module ignore_changes or drift-policy exemption is introduced.
+
+## Automatic Go profile bootstrap
+
+Set `profile: "go"` on a basic/private/main repository entry and provide the
+`bootstrap` object shown on `example_go_pilot` in repositories.json. The source,
+workflow and hook SHAs are approved pins; the Go patch version, code owner and
+module path are explicit. Repositories without a profile receive no source files.
+Templates and other language profiles remain separate/manual workflows.
+
+After Deploy repository pilot finishes creation and accepted-record verification,
+the bootstrap job requests production approval and opens a source PR containing
+the Go starter, pinned shared Actions, CODEOWNERS and pre-commit configuration.
+It waits for CI to pass and leaves merge to the repository reviewer. The existing
+example-go-pilot can be bootstrapped with **Bootstrap existing repository profiles**
+on main, without rerunning Terraform. Run the same workflow to resume after a
+bootstrap-only failure; it reuses the existing PR rather than recreating anything.
+
+Save TF_GITHUB_BOOTSTRAP_TOKEN in the production environment with Contents,
+Workflows and Pull requests write plus Administration read. The bootstrap has no
+AWS/OIDC authority and never executes destination code with that credential.
+The source configuration must still be current main when the job starts.
+
+Bootstrap refuses a custom README, existing application files, modified bootstrap
+branches, changed pins, or a closed/rejected bootstrap PR. Its provenance marker
+binds the repository ID, source and generated contents. Once merged, retries
+preserve developer edits. Profile changes are upgrades, not reinitialization.
+
+Developers install pre-commit and Gitleaks 8.30.1, then run `pre-commit install`.
+The Go profile adds format/vet/race checks alongside shared hygiene and secret
+scanning. Local hooks need installation in every clone; CI enforces validation.
+
+Source bootstrap does not authorize later onboarding stages. Keep stage=create
+until live verify/protect/grant authorization is implemented and reviewed.

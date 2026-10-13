@@ -7,7 +7,7 @@ an example directory. Example inventories are not deployed automatically.
 | Example | Result | Source bootstrap |
 | --- | --- | --- |
 | [Basic](basic/repositories.json) | Private repository initialized with a README and `main` | Add your own files in a PR |
-| [Go](go-pilot/repositories.json) | Private repository with Go topics, initialized with a README and `main` | Add the Go starter and CI in a PR |
+| [Go](go-pilot/repositories.json) | Private repository with Go topics, initialized with a README and `main` | Automatic reviewed bootstrap PR for profile=go |
 | [GitHub template](from-template/repositories.json) | Private repository copied from a GitHub template | Template supplies the initial files |
 | [Empty](empty/repositories.json) | Private repository with no initial commit | Push the first commit before opening a source PR |
 
@@ -23,12 +23,12 @@ an example directory. Example inventories are not deployed automatically.
 4. On main, manually run **Deploy repository pilot**, review the full-root plan,
    and approve production. The workflow uses the root inventory, creates the new
    repository, verifies settings, and conditionally advances the accepted record.
-5. Bootstrap source as described for the chosen type below.
+5. For the Go profile, approve the bootstrap job and review its source PR. Other examples follow their manual source instructions.
 
 All examples stay at `create` with no team grants or required checks. The current
 live adapter supports create stage only. Adding code does not itself authorize
 moving the inventory to bootstrap/protect/grant. A language topic does not install
-language tooling or upload source code.
+language tooling or upload source code; the explicit Go profile requests the automatic bootstrap PR.
 
 For offline validation of an individual inventory, run from the github-infra root:
 
