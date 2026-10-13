@@ -5,7 +5,15 @@ permissions:
   contents: read
   id-token: write
 jobs:
+  settings-preflight:
+    permissions:
+      contents: read
+      id-token: none
+    uses: ./.github/workflows/diagnose-plan-token.yml
+    secrets:
+      TF_GITHUB_PLAN_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
   deploy:
+    needs: settings-preflight
     uses: tyler180/github-workflows/.github/workflows/repository-create-deploy.yml@v2.1.0-rc.4
     with:
       trusted-policy-ref: v2.1.0-rc.4

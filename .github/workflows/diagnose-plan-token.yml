@@ -1,6 +1,10 @@
 name: Diagnose repository planning token
 on:
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      TF_GITHUB_PLAN_TOKEN:
+        required: true
   push:
     branches: [codex/diagnose-plan-token-drift]
     paths: [.github/workflows/diagnose-plan-token.yml]
@@ -8,6 +12,9 @@ permissions:
   contents: read
 jobs:
   diagnose:
+    permissions:
+      contents: read
+      id-token: none
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -25,7 +32,7 @@ jobs:
           with open(sys.argv[1]) as source:
               repository = json.load(source)
           fields = (
-              "allow_squash_merge", "allow_merge_commit", "allow_rebase_merge",
+              "allow_squash_merge", "allow_merge_commit", "allow_rebase_merge", "allow_auto_merge",
               "allow_update_branch", "delete_branch_on_merge",
               "merge_commit_title", "merge_commit_message",
               "squash_merge_commit_title", "squash_merge_commit_message",
@@ -40,4 +47,13 @@ jobs:
           for field in ("admin", "maintain", "push", "pull", "triage"):
               value = permissions.get(field, "MISSING") if isinstance(permissions, dict) else "MISSING"
               print("permissions." + field + ": " + json.dumps(value))
+          boolean_fields = fields[:6]
+          unavailable = [field for field in fields if field not in repository or repository[field] is None]
+          invalid = [field for field in boolean_fields if field in repository and type(repository[field]) is not bool]
+          invalid += [field for field in fields[6:] if field in repository and not isinstance(repository[field], str)]
+          if unavailable or invalid:
+              print("::error::Planning token returned incomplete repository settings: " + ", ".join(sorted(set(unavailable + invalid))))
+              print("Terraform would interpret missing settings as false or empty, creating false drift. Verify TF_GITHUB_PLAN_TOKEN's API visibility before planning.")
+              sys.exit(1)
+          print("Planning credential returned every required pilot setting; drift checks remain enabled.")
           PY
