@@ -75,3 +75,9 @@ original source and persisted state, and actual GitHub settings before creating
 the missing initial accepted record. It runs no Terraform commands and does not
 overwrite an existing accepted record. Run it before another pilot deployment;
 ordinary deployment intentionally rejects adoption of an unrecorded repository.
+
+## Repository creation examples
+
+See [examples](examples/README.md) for basic, Go, GitHub-template, and empty
+repository inventory entries and instructions for using this root and its
+deployment workflow. Example entries are not part of the deployed inventory.
