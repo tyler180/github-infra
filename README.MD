@@ -81,3 +81,9 @@ ordinary deployment intentionally rejects adoption of an unrecorded repository.
 See [examples](examples/README.md) for basic, Go, GitHub-template, and empty
 repository inventory entries and instructions for using this root and its
 deployment workflow. Example entries are not part of the deployed inventory.
+
+## Planning credential visibility
+
+Before shared planning starts, the deployment caller runs the read-only pilot settings preflight. A successful GET alone is insufficient: the response must include all merge settings, including actual false values. Missing, null, or malformed settings fail before Terraform can interpret them as false drift. This preflight currently covers the existing github-module-pilot; complete inventory-wide capability checks remain a shared-platform follow-up.
+
+The fine-grained planning PAT with Administration read access omitted merge settings during the live diagnostic. Administration write access is being verified as the narrow workaround; the credential therefore has write capability even though planning and diagnostics perform reads. Keep it confined to trusted workflows, retain the separate production apply credential, and do not describe it as a read-only credential. No module ignore_changes or drift-policy exemption is introduced.
