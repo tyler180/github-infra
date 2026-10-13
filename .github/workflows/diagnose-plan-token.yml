@@ -1,0 +1,43 @@
+name: Diagnose repository planning token
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/diagnose-plan-token-drift]
+    paths: [.github/workflows/diagnose-plan-token.yml]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read pilot settings with the planning credential
+        env:
+          GH_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$GH_TOKEN" || { echo 'TF_GITHUB_PLAN_TOKEN is unavailable.' >&2; exit 1; }
+          gh api repos/tyler180/github-module-pilot > "$RUNNER_TEMP/pilot-settings.json"
+          python3 - "$RUNNER_TEMP/pilot-settings.json" <<'PY'
+          import json
+          import sys
+
+          with open(sys.argv[1]) as source:
+              repository = json.load(source)
+          fields = (
+              "allow_squash_merge", "allow_merge_commit", "allow_rebase_merge",
+              "allow_update_branch", "delete_branch_on_merge",
+              "merge_commit_title", "merge_commit_message",
+              "squash_merge_commit_title", "squash_merge_commit_message",
+          )
+          print("Repository:", repository.get("full_name", "MISSING"))
+          for field in fields:
+              if field not in repository:
+                  print(field + ": MISSING (not false)")
+              else:
+                  print(field + ": " + json.dumps(repository[field]))
+          permissions = repository.get("permissions")
+          for field in ("admin", "maintain", "push", "pull", "triage"):
+              value = permissions.get(field, "MISSING") if isinstance(permissions, dict) else "MISSING"
+              print("permissions." + field + ": " + json.dumps(value))
+          PY
