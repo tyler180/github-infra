@@ -26,3 +26,15 @@ run "unapproved_source_pin_is_rejected" {
   variables { inventory_file = "tests/unapproved-bootstrap-pin.json" }
   expect_failures = [terraform_data.contract]
 }
+
+run "floating_bootstrap_ref_is_rejected" {
+  command = plan
+  variables { inventory_file = "tests/floating-bootstrap-ref.json" }
+  expect_failures = [terraform_data.contract]
+}
+
+run "mixed_bootstrap_aliases_are_rejected" {
+  command = plan
+  variables { inventory_file = "tests/mixed-bootstrap-aliases.json" }
+  expect_failures = [terraform_data.contract]
+}

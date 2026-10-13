@@ -120,3 +120,16 @@ scanning. Local hooks need installation in every clone; CI enforces validation.
 
 Source bootstrap does not authorize later onboarding stages. Keep stage=create
 until live verify/protect/grant authorization is implemented and reviewed.
+
+Bootstrap version fields are `source_ref`, `workflow_ref` and `hook_ref`. Use exact
+immutable published release versions or approved full commit SHAs. Legacy `_sha`
+fields still accept full SHAs, but must not be mixed with `_ref` aliases. Runtime
+resolution verifies release immutability, unwraps annotated tags and requires the
+resolved commit to match this automation version's approved sources. Terraform
+validates syntax offline; it cannot attest release immutability.
+
+The current workflow/hook refs use `v2.2.0-rc.1`. The approved source commit has no
+published release, so source_ref retains its SHA until that revision receives an
+immutable release. No release is created by configuration validation. Provenance
+records requested refs and resolved commits. Changing a SHA to an equivalent
+release preserves the existing bootstrap fingerprint and developer files.

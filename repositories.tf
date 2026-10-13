@@ -1,6 +1,12 @@
 locals {
   inventory = jsondecode(file("${path.module}/${var.inventory_file}"))
   stages    = ["create", "bootstrap", "verify", "protect", "grant"]
+  bootstrap_refs = { for key, repo in local.inventory.repositories : key => {
+    source   = try(repo.bootstrap.source_ref, repo.bootstrap.source_sha, null)
+    workflow = try(repo.bootstrap.workflow_ref, repo.bootstrap.workflow_sha, null)
+    hook     = try(repo.bootstrap.hook_ref, repo.bootstrap.hook_sha, null)
+  } }
+  bootstrap_ref_pattern = "^([0-9a-f]{40}|v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[A-Za-z0-9]+([.-][A-Za-z0-9]+)*)?)$"
 }
 
 # No provider operations: this is a structural guard, not historical proof.
@@ -14,17 +20,20 @@ resource "terraform_data" "contract" {
       error_message = "The Go profile currently requires create stage, basic initialization, private visibility and main."
     }
     precondition {
-      condition = alltrue([for repo in values(local.inventory.repositories) :
+      condition = alltrue([for key, repo in local.inventory.repositories :
         try(repo.profile, null) == null ? true : try(
-          toset(keys(repo.bootstrap)) == toset(["source_sha", "workflow_sha", "hook_sha", "go_version", "code_owner", "go_module"]) &&
-          repo.bootstrap.source_sha == "6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32" &&
-          repo.bootstrap.workflow_sha == "0ecbb0fcaea1deb8a8617a51d719b821500e873f" &&
-          repo.bootstrap.hook_sha == "0ecbb0fcaea1deb8a8617a51d719b821500e873f" &&
+          (toset(keys(repo.bootstrap)) == toset(["source_ref", "workflow_ref", "hook_ref", "go_version", "code_owner", "go_module"]) ||
+          toset(keys(repo.bootstrap)) == toset(["source_sha", "workflow_sha", "hook_sha", "go_version", "code_owner", "go_module"])) &&
+          alltrue([for ref in values(local.bootstrap_refs[key]) : can(regex(local.bootstrap_ref_pattern, ref))]) &&
+          (can(regex("^v", local.bootstrap_refs[key].source)) || local.bootstrap_refs[key].source == "6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32") &&
+          (can(regex("^v", local.bootstrap_refs[key].workflow)) || local.bootstrap_refs[key].workflow == "0ecbb0fcaea1deb8a8617a51d719b821500e873f") &&
+          (can(regex("^v", local.bootstrap_refs[key].hook)) || local.bootstrap_refs[key].hook == "0ecbb0fcaea1deb8a8617a51d719b821500e873f") &&
+          (contains(keys(repo.bootstrap), "source_ref") || alltrue([for ref in values(local.bootstrap_refs[key]) : can(regex("^[0-9a-f]{40}$", ref))])) &&
           can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", repo.bootstrap.go_version)) &&
           can(regex("^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)?$", repo.bootstrap.code_owner)) &&
         repo.bootstrap.go_module == "github.com/${var.github_owner}/${repo.name}", false)
       ])
-      error_message = "Go bootstrap requires approved source/workflow/hook pins, an explicit Go patch version, authorized code owner and matching module path."
+      error_message = "Go bootstrap requires exact release refs or approved SHAs (without mixed aliases), an explicit Go patch version, authorized code owner and matching module path."
     }
     precondition {
       condition     = local.inventory.schema_version == 1 && alltrue([for repo in values(local.inventory.repositories) : contains(local.stages, repo.stage)])
