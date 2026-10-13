@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "example_from_template": {
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "template",
+      "default_branch": "main",
+      "rename_default_branch": true,
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {},
+      "name": "example-template-pilot",
+      "description": "Repository created from a GitHub template.",
+      "template": {
+        "owner": "YOUR_TEMPLATE_OWNER",
+        "repository": "YOUR_TEMPLATE_REPOSITORY"
+      },
+      "topics": [
+        "pilot"
+      ]
+    }
+  }
+}

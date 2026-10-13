@@ -17,6 +17,22 @@
       "provisioning_teams": {},
       "developer_teams": {},
       "required_checks": {}
+    },
+    "example_go_pilot": {
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "basic",
+      "default_branch": "main",
+      "rename_default_branch": true,
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {},
+      "name": "example-go-pilot",
+      "description": "Go repository pilot.",
+      "topics": [
+        "go",
+        "pilot"
+      ]
     }
   }
 }

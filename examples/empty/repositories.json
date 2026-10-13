@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "example_empty": {
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "none",
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {},
+      "name": "example-empty-pilot",
+      "description": "Empty repository for a custom source bootstrap.",
+      "topics": [
+        "pilot"
+      ]
+    }
+  }
+}
