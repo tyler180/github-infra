@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "example_go_pilot": {
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "basic",
+      "default_branch": "main",
+      "rename_default_branch": true,
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {},
+      "name": "example-go-pilot",
+      "description": "Go repository pilot.",
+      "topics": [
+        "go",
+        "pilot"
+      ],
+      "profile": "terraform",
+      "bootstrap": {
+        "source_sha": "6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32",
+        "workflow_sha": "0ecbb0fcaea1deb8a8617a51d719b821500e873f",
+        "hook_sha": "0ecbb0fcaea1deb8a8617a51d719b821500e873f",
+        "go_version": "1.26.5",
+        "code_owner": "tyler180",
+        "go_module": "github.com/tyler180/example-go-pilot"
+      }
+    }
+  }
+}

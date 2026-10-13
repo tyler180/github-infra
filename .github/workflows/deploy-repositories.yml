@@ -22,3 +22,11 @@ jobs:
     secrets:
       TF_GITHUB_PLAN_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
       TF_GITHUB_APPLY_TOKEN: ${{ secrets.TF_GITHUB_APPLY_TOKEN }}
+  bootstrap:
+    needs: deploy
+    permissions:
+      contents: read
+      id-token: none
+    uses: tyler180/github-workflows/.github/workflows/repository-bootstrap.yml@c72458b2abee991bff1026e3248b70759d080278
+    with:
+      automation-sha: c72458b2abee991bff1026e3248b70759d080278
