@@ -105,7 +105,7 @@ on main, without rerunning Terraform. Run the same workflow to resume after a
 bootstrap-only failure; it reuses the existing PR rather than recreating anything.
 
 Save TF_GITHUB_BOOTSTRAP_TOKEN in the production environment with Contents,
-Workflows and Pull requests write plus Administration read. The bootstrap has no
+Workflows and Pull requests write plus Administration, Checks and Actions read. The bootstrap has no
 AWS/OIDC authority and never executes destination code with that credential.
 The source configuration must still be current main when the job starts.
 
