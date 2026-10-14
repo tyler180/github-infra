@@ -18,8 +18,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    uses: tyler180/github-workflows/.github/workflows/repository-terraform-starter.yml@v2.3.0-rc.2
+    uses: tyler180/github-workflows/.github/workflows/repository-terraform-starter.yml@v2.3.0-rc.3
     with:
-      automation-ref: v2.3.0-rc.2
+      automation-ref: v2.3.0-rc.3
     secrets:
       TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}

@@ -130,6 +130,7 @@ resource "github_actions_variable" "deployment" {
     TERRAFORM_STATE_ID       = "example-go-pilot"
     TERRAFORM_ENVIRONMENT    = github_repository_environment.deployment.environment
     TERRAFORM_AWS_REGION     = "us-west-2"
+    TERRAFORM_ECR_REGISTRY   = "${local.account}.dkr.ecr.us-west-2.amazonaws.com"
     TERRAFORM_ENABLED        = "true"
     TERRAFORM_DEPLOY_ENABLED = "true"
   }
