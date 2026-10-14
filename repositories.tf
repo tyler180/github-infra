@@ -18,10 +18,10 @@ resource "terraform_data" "contract" {
         try(repo.terraform_starter, null) == null ? true : try(
           toset(keys(repo.terraform_starter)) == toset(["terraform_version", "workflow_ref", "working_directory"]) &&
           can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", repo.terraform_starter.terraform_version)) &&
-          can(regex("^[0-9a-f]{40}$", repo.terraform_starter.workflow_ref)) &&
+          can(regex(local.bootstrap_ref_pattern, repo.terraform_starter.workflow_ref)) &&
         can(regex("^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$", repo.terraform_starter.working_directory)), false)
       ])
-      error_message = "Terraform starter requires an explicit patch version, reviewed full workflow SHA and relative directory without traversal."
+      error_message = "Terraform starter requires an explicit patch version, exact immutable workflow release version or full SHA and relative directory without traversal."
     }
     precondition {
       condition = alltrue([for repo in values(local.inventory.repositories) :
