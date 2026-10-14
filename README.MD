@@ -155,7 +155,7 @@ variables are managed in `deployment-roles/example-go-pilot` with a separate sta
 Set `developer_hooks` on each selected inventory entry:
 
 ```json
-"developer_hooks": {"hook_ref": "v2.3.0-rc.5", "ai_review": true}
+"developer_hooks": {"hook_ref": "v2.3.0-rc.8", "ai_review": true}
 ```
 
 Run **Update managed repository developer hooks** from main. After the existing
@@ -170,8 +170,8 @@ Unrelated hooks and application files are preserved; YAML formatting/comments
 may change. Adoption-stage entries are rejected. Remove `developer_hooks` to
 stop managing this configuration, or set `ai_review` false to propose removal
 of the AI hook. Each developer still approves code submission to their provider,
-installs with `pre-commit install --hook-type pre-push`, and explicitly enables
+installs with `pre-commit install --hook-type pre-commit`, and explicitly enables
 `git config --local hooks.aiReview true`. GitHub cannot install local Git hooks
 or grant model-access consent on developers' machines.
 
-The updater caller requires published immutable github-workflows v2.3.0-rc.7.
+The updater caller requires published immutable github-workflows v2.3.0-rc.9.
