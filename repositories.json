@@ -16,7 +16,11 @@
       ],
       "provisioning_teams": {},
       "developer_teams": {},
-      "required_checks": {}
+      "required_checks": {},
+      "developer_hooks": {
+        "hook_ref": "v2.3.0-rc.5",
+        "ai_review": true
+      }
     },
     "example_go_pilot": {
       "stage": "create",
@@ -46,6 +50,10 @@
         "terraform_version": "1.15.0",
         "workflow_ref": "v2.3.0-rc.4",
         "working_directory": "terraform"
+      },
+      "developer_hooks": {
+        "hook_ref": "v2.3.0-rc.5",
+        "ai_review": true
       }
     }
   }

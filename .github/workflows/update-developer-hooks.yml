@@ -1,0 +1,15 @@
+name: Update managed repository developer hooks
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hooks:
+    permissions:
+      contents: read
+      id-token: none
+    uses: tyler180/github-workflows/.github/workflows/repository-developer-hooks.yml@v2.3.0-rc.6
+    with:
+      automation-ref: v2.3.0-rc.6
+    secrets:
+      TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}
