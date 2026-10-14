@@ -174,4 +174,4 @@ installs with `pre-commit install --hook-type pre-push`, and explicitly enables
 `git config --local hooks.aiReview true`. GitHub cannot install local Git hooks
 or grant model-access consent on developers' machines.
 
-The updater caller requires published immutable github-workflows v2.3.0-rc.6.
+The updater caller requires published immutable github-workflows v2.3.0-rc.7.
