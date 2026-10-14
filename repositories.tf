@@ -15,6 +15,16 @@ resource "terraform_data" "contract" {
   lifecycle {
     precondition {
       condition = alltrue([for repo in values(local.inventory.repositories) :
+        try(repo.developer_hooks, null) == null ? true : try(
+          repo.stage != "adopt" &&
+          toset(keys(repo.developer_hooks)) == toset(["hook_ref", "ai_review"]) &&
+          repo.developer_hooks.hook_ref == "v2.3.0-rc.5" &&
+        contains(["true", "false"], jsonencode(repo.developer_hooks.ai_review)), false)
+      ])
+      error_message = "Developer hooks require the approved immutable release, a boolean ai_review, and an accepted non-adoption repository."
+    }
+    precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
         try(repo.terraform_starter, null) == null ? true : try(
           toset(keys(repo.terraform_starter)) == toset(["terraform_version", "workflow_ref", "working_directory"]) &&
           can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", repo.terraform_starter.terraform_version)) &&

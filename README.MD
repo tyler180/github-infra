@@ -149,3 +149,29 @@ The bootstrap and deployment dispatch callers run the additive Terraform starter
 job after Go bootstrap, pinned to `github-workflows@v2.3.0-rc.4`.
 Pilot OIDC roles, Lambda execution boundary, main-only manual deployment environment and Actions
 variables are managed in `deployment-roles/example-go-pilot` with a separate state.
+
+## Update hooks in existing managed repositories
+
+Set `developer_hooks` on each selected inventory entry:
+
+```json
+"developer_hooks": {"hook_ref": "v2.3.0-rc.5", "ai_review": true}
+```
+
+Run **Update managed repository developer hooks** from main. After the existing
+production environment approval, shared automation opens a PR in each selected
+repository changing only `.pre-commit-config.yaml`. Review and merge those PRs.
+The current inventory selects both managed pilot repositories; the Go pilot is
+already current and will be skipped. No Terraform apply or bootstrap rerun is
+needed. Keep original bootstrap references unchanged: they describe the original
+initialization, not later upgrades.
+
+Unrelated hooks and application files are preserved; YAML formatting/comments
+may change. Adoption-stage entries are rejected. Remove `developer_hooks` to
+stop managing this configuration, or set `ai_review` false to propose removal
+of the AI hook. Each developer still approves code submission to their provider,
+installs with `pre-commit install --hook-type pre-push`, and explicitly enables
+`git config --local hooks.aiReview true`. GitHub cannot install local Git hooks
+or grant model-access consent on developers' machines.
+
+The updater caller requires published immutable github-workflows v2.3.0-rc.6.
