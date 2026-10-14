@@ -8,8 +8,8 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    uses: tyler180/github-workflows/.github/workflows/repository-developer-hooks.yml@v2.3.0-rc.7
+    uses: tyler180/github-workflows/.github/workflows/repository-developer-hooks.yml@v2.3.0-rc.9
     with:
-      automation-ref: v2.3.0-rc.7
+      automation-ref: v2.3.0-rc.9
     secrets:
       TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}

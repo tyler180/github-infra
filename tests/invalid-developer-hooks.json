@@ -18,7 +18,7 @@
       "developer_teams": {},
       "required_checks": {},
       "developer_hooks": {
-        "hook_ref": "v2.3.0-rc.5",
+        "hook_ref": "v2.3.0-rc.8",
         "ai_review": "true"
       }
     },
@@ -52,7 +52,7 @@
         "working_directory": "terraform"
       },
       "developer_hooks": {
-        "hook_ref": "v2.3.0-rc.5",
+        "hook_ref": "v2.3.0-rc.8",
         "ai_review": true
       }
     }

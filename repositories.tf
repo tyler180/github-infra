@@ -18,7 +18,7 @@ resource "terraform_data" "contract" {
         try(repo.developer_hooks, null) == null ? true : try(
           repo.stage != "adopt" &&
           toset(keys(repo.developer_hooks)) == toset(["hook_ref", "ai_review"]) &&
-          repo.developer_hooks.hook_ref == "v2.3.0-rc.5" &&
+          repo.developer_hooks.hook_ref == "v2.3.0-rc.8" &&
         contains(["true", "false"], jsonencode(repo.developer_hooks.ai_review)), false)
       ])
       error_message = "Developer hooks require the approved immutable release, a boolean ai_review, and an accepted non-adoption repository."
