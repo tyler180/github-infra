@@ -31,3 +31,17 @@ must be published immutably before this configuration is merged. No release is
 created by configuration validation. Provenance
 records requested refs and resolved commits. Changing a SHA to an equivalent
 release preserves the existing bootstrap fingerprint and developer files.
+
+## Optional Terraform callers
+
+The example now includes `terraform_starter` metadata. After Go bootstrap, the Terraform starter job opens an additive PR. To render
+the disabled PR-plan and manual-deploy callers locally:
+
+```sh
+python3 scripts/render-terraform-starter.py --repository example_go_pilot \
+  --inventory examples/go-pilot/repositories.json \
+  --destination /tmp/go-pilot-terraform-overlay
+```
+
+Add the generated files through a PR and follow `TERRAFORM-STARTER.md` before
+enabling plans/deployment. Existing Go/Terraform files are not replaced.

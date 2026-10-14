@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "example_existing_go": {
+      "name": "example-existing-go",
+      "stage": "adopt",
+      "initialization": "none",
+      "description": "Replace all settings with observed values before import",
+      "homepage_url": "",
+      "topics": [
+        "go"
+      ],
+      "visibility": "private",
+      "merge_methods": [
+        "squash"
+      ],
+      "delete_branch_on_merge": true,
+      "allow_auto_merge": false,
+      "allow_update_branch": true,
+      "archived": false,
+      "features": {
+        "issues": true,
+        "discussions": false,
+        "wiki": false,
+        "projects": false
+      },
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {},
+      "terraform_starter": {
+        "terraform_version": "1.15.0",
+        "workflow_ref": "main",
+        "working_directory": "terraform"
+      }
+    }
+  }
+}
