@@ -134,3 +134,18 @@ must be published immutably before this configuration is merged. No release is
 created by configuration validation. Provenance
 records requested refs and resolved commits. Changing a SHA to an equivalent
 release preserves the existing bootstrap fingerprint and developer files.
+
+## Opt-in Terraform callers and existing repositories
+
+`terraform_starter` stores an explicit Terraform version, reviewed shared-workflow
+SHA and working directory. Render callers locally with
+`scripts/render-terraform-starter.py`; automatic Go bootstrap remains separate, followed by an additive Terraform starter PR.
+See [existing repository adoption and workflow installation](examples/adoption/README.md)
+for settings import preparation and the new `adopt` inventory stage. Normal live
+onboarding does not accept adoption entries; a reviewed no-change adoption and
+identity baseline are required before enabling that path.
+
+The bootstrap and deployment dispatch callers run the additive Terraform starter
+job after Go bootstrap, pinned to `github-workflows@v2.3.0-rc.2`.
+Pilot OIDC roles, Lambda execution boundary, main-only manual deployment environment and Actions
+variables are managed in `deployment-roles/example-go-pilot` with a separate state.

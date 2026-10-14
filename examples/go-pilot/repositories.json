@@ -24,6 +24,11 @@
         "source_ref": "v0.1.0-rc.3",
         "workflow_ref": "v2.2.0-rc.1",
         "hook_ref": "v2.2.0-rc.1"
+      },
+      "terraform_starter": {
+        "terraform_version": "1.15.0",
+        "workflow_ref": "c46168073f7f968cfe6f9f7e26b1fcc7ab0708fd",
+        "working_directory": "terraform"
       }
     }
   }

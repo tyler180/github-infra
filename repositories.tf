@@ -1,6 +1,6 @@
 locals {
   inventory = jsondecode(file("${path.module}/${var.inventory_file}"))
-  stages    = ["create", "bootstrap", "verify", "protect", "grant"]
+  stages    = ["create", "bootstrap", "verify", "protect", "grant", "adopt"]
   bootstrap_refs = { for key, repo in local.inventory.repositories : key => {
     source   = try(repo.bootstrap.source_ref, repo.bootstrap.source_sha, null)
     workflow = try(repo.bootstrap.workflow_ref, repo.bootstrap.workflow_sha, null)
@@ -13,6 +13,29 @@ locals {
 resource "terraform_data" "contract" {
   input = local.inventory
   lifecycle {
+    precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
+        try(repo.terraform_starter, null) == null ? true : try(
+          toset(keys(repo.terraform_starter)) == toset(["terraform_version", "workflow_ref", "working_directory"]) &&
+          can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", repo.terraform_starter.terraform_version)) &&
+          can(regex("^[0-9a-f]{40}$", repo.terraform_starter.workflow_ref)) &&
+        can(regex("^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$", repo.terraform_starter.working_directory)), false)
+      ])
+      error_message = "Terraform starter requires an explicit patch version, reviewed full workflow SHA and relative directory without traversal."
+    }
+    precondition {
+      condition = alltrue([for repo in values(local.inventory.repositories) :
+        repo.stage != "adopt" ? true : try(
+          repo.initialization == "none" && try(repo.profile, null) == null &&
+          alltrue([for field in ["description", "homepage_url", "topics", "visibility", "merge_methods", "delete_branch_on_merge", "allow_auto_merge", "allow_update_branch", "archived", "features"] : contains(keys(repo), field)]) &&
+          toset(keys(repo.features)) == toset(["issues", "discussions", "wiki", "projects"]) &&
+          try(repo.default_branch, null) == null &&
+          try(repo.actions_policy, null) == null && try(repo.workflow_permissions, null) == null &&
+          length(try(repo.provisioning_teams, {})) == 0 && length(try(repo.developer_teams, {})) == 0,
+        false)
+      ])
+      error_message = "Adoption starts with repository settings only: initialization none, explicit observed settings and all feature flags, no profile, subordinate resources or grants."
+    }
     precondition {
       condition = alltrue([for repo in values(local.inventory.repositories) :
         try(repo.profile, null) == null ? true : try(repo.profile == "go" && repo.stage == "create" && repo.initialization == "basic" && repo.visibility == "private" && repo.default_branch == "main", false)

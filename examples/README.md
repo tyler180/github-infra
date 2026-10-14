@@ -1,4 +1,4 @@
-# Repository creation examples
+# Repository creation and adoption examples
 
 These are inventory examples for this consuming root, which calls the published
 `github-module`. No Terraform root or sibling module checkout is needed inside
@@ -25,7 +25,7 @@ an example directory. Example inventories are not deployed automatically.
    repository, verifies settings, and conditionally advances the accepted record.
 5. For the Go profile, approve the bootstrap job and review its source PR. Other examples follow their manual source instructions.
 
-All examples stay at `create` with no team grants or required checks. The current
+The creation examples stay at `create` with no team grants or required checks. The current
 live adapter supports create stage only. Adding code does not itself authorize
 moving the inventory to bootstrap/protect/grant. A language topic does not install
 language tooling or upload source code; the explicit Go profile requests the automatic bootstrap PR.
@@ -47,4 +47,6 @@ inventory and use the deployment workflow.
 Adoption is a separate import and review operation. The creation workflow rejects
 implicit adoption, so these examples all use new repository names. Match existing
 settings and import resources through a separately reviewed adoption process;
-see the module's [adoption example](https://github.com/tyler180/github-module/tree/main/examples/adoption).
+see the local [adoption preparation and Terraform workflow guide](adoption/README.md).
+Its `adopt` inventory is an offline import-preparation fixture and must not be used
+with the ordinary creation deployment workflow.

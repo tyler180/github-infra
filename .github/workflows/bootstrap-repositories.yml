@@ -13,3 +13,13 @@ jobs:
       automation-ref: v2.3.0-rc.1
     secrets:
       TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}
+  terraform-starters:
+    needs: bootstrap
+    permissions:
+      contents: read
+      id-token: none
+    uses: tyler180/github-workflows/.github/workflows/repository-terraform-starter.yml@v2.3.0-rc.2
+    with:
+      automation-ref: v2.3.0-rc.2
+    secrets:
+      TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}
