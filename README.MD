@@ -146,6 +146,6 @@ onboarding does not accept adoption entries; a reviewed no-change adoption and
 identity baseline are required before enabling that path.
 
 The bootstrap and deployment dispatch callers run the additive Terraform starter
-job after Go bootstrap, pinned to `github-workflows@v2.3.0-rc.3`.
+job after Go bootstrap, pinned to `github-workflows@v2.3.0-rc.4`.
 Pilot OIDC roles, Lambda execution boundary, main-only manual deployment environment and Actions
 variables are managed in `deployment-roles/example-go-pilot` with a separate state.

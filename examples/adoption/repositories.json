@@ -29,7 +29,7 @@
       "required_checks": {},
       "terraform_starter": {
         "terraform_version": "1.15.0",
-        "workflow_ref": "fc12894f6da97bb6bc4c9a8e407d31fadd51a401",
+        "workflow_ref": "v2.3.0-rc.4",
         "working_directory": "terraform"
       }
     }
