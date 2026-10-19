@@ -1,0 +1,73 @@
+{
+  "observed_at_utc": "2026-10-14T01:00:20Z",
+  "repository": "tyler180/dynasty-ff-backend",
+  "repository_id": 1330281987,
+  "node_id": "R_kgDOT0p-Aw",
+  "default_branch": "main",
+  "source_commit": "c1835e77241bc166e6d6d16921808958f83d13f5",
+  "settings": {
+    "name": "dynasty-ff-backend",
+    "stage": "adopt",
+    "initialization": "none",
+    "description": "",
+    "homepage_url": "",
+    "topics": [],
+    "visibility": "public",
+    "merge_methods": [
+      "merge",
+      "squash",
+      "rebase"
+    ],
+    "delete_branch_on_merge": false,
+    "allow_auto_merge": false,
+    "allow_update_branch": false,
+    "archived": false,
+    "features": {
+      "issues": true,
+      "discussions": false,
+      "wiki": false,
+      "projects": true
+    },
+    "provisioning_teams": {},
+    "developer_teams": {},
+    "required_checks": {}
+  },
+  "rulesets": [],
+  "branch_protection": {
+    "status": 404,
+    "message": "Branch not protected"
+  },
+  "actions_policy": {
+    "enabled": true,
+    "allowed_actions": "all",
+    "sha_pinning_required": false
+  },
+  "workflow_permissions": {
+    "default_workflow_permissions": "read",
+    "can_approve_pull_request_reviews": false
+  },
+  "teams": [],
+  "environments": [
+    {
+      "name": "dev",
+      "protection_rules": [],
+      "deployment_branch_policy": null
+    }
+  ],
+  "verified_source_paths": [
+    ".github/workflows/pr.yml",
+    ".github/workflows/merge.yml",
+    "Dockerfile",
+    "go.mod",
+    "terraform/main.tf",
+    "terraform/provider.tf"
+  ],
+  "unverified": [
+    "inherited collaborator access",
+    "installed GitHub Apps",
+    "backend/provider access",
+    "no-change import plan"
+  ],
+  "adoption_accepted": false,
+  "deployment_authorized": false
+}
