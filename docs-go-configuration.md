@@ -6,14 +6,21 @@ This is a separate, manual source operation; it does not run Terraform or alter
 accepted deployment records. New Go starters rendered from the updated module
 use `cmd/<module-name>/main.go` and a tracked `.go-main.mk`.
 
-First publish the reviewed `github-workflows` changes containing
-`repository-go-configure.yml` and `scripts/configure-go.py`. Then stage a caller
-from the current inventory using that release's actual full SHA or immutable
-release tag:
+Published immutable releases are `github-module@v0.1.0-rc.7` for new source,
+`github-workflows@v2.3.0-rc.10` for Go validation, and
+`github-workflows@v2.3.0-rc.11` for configuration PRs and bootstrap approvals.
+The committed callers cover every Go inventory entry:
+
+- **Configure Go application (nl2tf)**
+- **Configure Go application (example-go-pilot)**
+
+Run the applicable caller manually from main after the application's intended
+source has reached its default branch. The job uses the protected `production`
+environment. To stage a caller for another inventory entry:
 
 ```sh
 python3 scripts/render-go-configuration.py --repository nl2tf \
-  --automation-ref FULL_REVIEWED_WORKFLOWS_SHA \
+  --automation-ref v2.3.0-rc.11 \
   --output /tmp/configure-nl2tf.yml
 ```
 
@@ -25,9 +32,9 @@ contents/PR write access to the target repo. Review and merge the resulting PR
 normally; the workflow never merges it automatically.
 
 The renderer takes the target name and Go version from the selected Go inventory
-entry. It refuses floating refs and existing output files. It does not change
-inventory source/workflow pins: upgrade those separately after publishing the
-updated `github-module` starter and `github-workflows` validation releases.
+entry. It refuses floating refs and existing output files. Existing inventory bootstrap pins stay unchanged because their provenance is
+bound to the original generated source. The new-repo example uses the updated
+source and validation releases. Do not rerun bootstrap as a source upgrade.
 
 For a local checkout, run the shared tool directly before publishing:
 

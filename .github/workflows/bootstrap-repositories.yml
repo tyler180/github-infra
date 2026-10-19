@@ -8,9 +8,9 @@ jobs:
     permissions:
       contents: read
       id-token: none
-    uses: tyler180/github-workflows/.github/workflows/repository-bootstrap.yml@bfdf1ddbbac8326a2fc628a94e6dd085c8aa8692
+    uses: tyler180/github-workflows/.github/workflows/repository-bootstrap.yml@v2.3.0-rc.11
     with:
-      automation-ref: bfdf1ddbbac8326a2fc628a94e6dd085c8aa8692
+      automation-ref: v2.3.0-rc.11
     secrets:
       TF_GITHUB_BOOTSTRAP_TOKEN: ${{ secrets.TF_GITHUB_BOOTSTRAP_TOKEN }}
   terraform-starters:
