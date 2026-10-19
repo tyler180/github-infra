@@ -62,3 +62,12 @@ run "internal_go_profile_is_rejected" {
   variables { inventory_file = "tests/go-profile-internal.json" }
   expect_failures = [terraform_data.contract]
 }
+
+run "new_go_starter_release_refs_are_supported" {
+  command = plan
+  variables { inventory_file = "examples/go-pilot/repositories.json" }
+  assert {
+    condition     = terraform_data.contract.input.repositories.example_go_pilot.bootstrap.source_ref == "v0.1.0-rc.7"
+    error_message = "The new Go example must select the published cmd-layout starter."
+  }
+}

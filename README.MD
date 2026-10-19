@@ -129,12 +129,13 @@ resolution verifies release immutability, unwraps annotated tags and requires th
 resolved commit to match this automation version's approved sources. Terraform
 validates syntax offline; it cannot attest release immutability.
 
-The source ref uses `v0.1.0-rc.3`, workflow/hook refs use `v2.2.0-rc.1`, and the
-bootstrap workflow caller uses `v2.3.0-rc.1` with automation-ref. These releases
-must be published immutably before this configuration is merged. No release is
-created by configuration validation. Provenance
-records requested refs and resolved commits. Changing a SHA to an equivalent
-release preserves the existing bootstrap fingerprint and developer files.
+New Go profiles use source `v0.1.0-rc.7` with workflow/hook refs
+`v2.3.0-rc.10`. The bootstrap workflow caller uses `v2.3.0-rc.11`.
+Existing inventory entries keep source `v0.1.0-rc.3` and workflow/hook refs
+`v2.2.0-rc.1` to preserve their bootstrap fingerprints. The updated automation
+supports both approved generations; use the separate configuration callers for
+existing application upgrades. Provenance records requested refs and resolved
+commits. Changing a SHA to an equivalent release preserves the existing fingerprint.
 
 ## Opt-in Terraform callers and existing repositories
 

@@ -58,9 +58,9 @@ resource "terraform_data" "contract" {
           (toset(keys(repo.bootstrap)) == toset(["source_ref", "workflow_ref", "hook_ref", "go_version", "code_owner", "go_module"]) ||
           toset(keys(repo.bootstrap)) == toset(["source_sha", "workflow_sha", "hook_sha", "go_version", "code_owner", "go_module"])) &&
           alltrue([for ref in values(local.bootstrap_refs[key]) : can(regex(local.bootstrap_ref_pattern, ref))]) &&
-          (can(regex("^v", local.bootstrap_refs[key].source)) || local.bootstrap_refs[key].source == "6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32") &&
-          (can(regex("^v", local.bootstrap_refs[key].workflow)) || local.bootstrap_refs[key].workflow == "0ecbb0fcaea1deb8a8617a51d719b821500e873f") &&
-          (can(regex("^v", local.bootstrap_refs[key].hook)) || local.bootstrap_refs[key].hook == "0ecbb0fcaea1deb8a8617a51d719b821500e873f") &&
+          (can(regex("^v", local.bootstrap_refs[key].source)) || contains(["6ec3d0adb8de698830e5a40f5bdb1f7cf6372d32", "b9c4a58af31b40aad1232ae7f7cb9b49bcc0b51c"], local.bootstrap_refs[key].source)) &&
+          (can(regex("^v", local.bootstrap_refs[key].workflow)) || contains(["0ecbb0fcaea1deb8a8617a51d719b821500e873f", "e4486c2c255b0f27a7b3ae4b59938dab1f516b4b"], local.bootstrap_refs[key].workflow)) &&
+          (can(regex("^v", local.bootstrap_refs[key].hook)) || contains(["0ecbb0fcaea1deb8a8617a51d719b821500e873f", "e4486c2c255b0f27a7b3ae4b59938dab1f516b4b"], local.bootstrap_refs[key].hook)) &&
           (contains(keys(repo.bootstrap), "source_ref") || alltrue([for ref in values(local.bootstrap_refs[key]) : can(regex("^[0-9a-f]{40}$", ref))])) &&
           can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", repo.bootstrap.go_version)) &&
           can(regex("^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)?$", repo.bootstrap.code_owner)) &&
