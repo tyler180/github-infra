@@ -176,3 +176,21 @@ installs with `pre-commit install --hook-type pre-commit`, and explicitly enable
 or grant model-access consent on developers' machines.
 
 The updater caller requires published immutable github-workflows v2.3.0-rc.9.
+
+## Reconcile observed repository state
+
+In **Actions → Deploy repository pilot → Run workflow**, select
+`operation: reconcile-state` on `main` when an intentional GitHub settings
+change leaves Terraform state stale. The default operation remains `deploy`.
+
+The reconciliation path saves a refresh-only plan and lists affected resources
+and fields in the plan job summary. Review the before/after values in its
+Terraform log, then approve the `production` job to apply that exact saved plan.
+It shares the repository deployment lock and rejects configuration superseded
+on main, resource mutations, deletions, identity changes, and visibility that
+differs from the inventory. New inventory entries are left pending.
+
+This updates Terraform state only; it does not create repositories, run
+bootstrap, or advance the accepted deployment record. After reconciliation,
+start a fresh run with `operation: deploy`. Ordinary deployment still rejects
+remote drift and performs live verification before advancing its accepted record.
