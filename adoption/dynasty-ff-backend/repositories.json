@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "repositories": {
+    "pilot": {
+      "name": "github-module-pilot",
+      "description": "Disposable pilot for the GitHub repository Terraform module.",
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "basic",
+      "default_branch": "main",
+      "rename_default_branch": true,
+      "topics": [
+        "terraform",
+        "platform-engineering",
+        "pilot"
+      ],
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {}
+    },
+    "example_go_pilot": {
+      "stage": "create",
+      "visibility": "private",
+      "initialization": "basic",
+      "default_branch": "main",
+      "rename_default_branch": true,
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {},
+      "name": "example-go-pilot",
+      "description": "Go repository pilot.",
+      "topics": [
+        "go",
+        "pilot"
+      ],
+      "profile": "go",
+      "bootstrap": {
+        "go_version": "1.26.5",
+        "code_owner": "tyler180",
+        "go_module": "github.com/tyler180/example-go-pilot",
+        "source_ref": "v0.1.0-rc.3",
+        "workflow_ref": "v2.2.0-rc.1",
+        "hook_ref": "v2.2.0-rc.1"
+      },
+      "terraform_starter": {
+        "terraform_version": "1.15.0",
+        "workflow_ref": "af06ebbdfe069ce16beee12d86c9ee03591592d7",
+        "working_directory": "terraform"
+      }
+    },
+    "dynasty_ff_backend": {
+      "name": "dynasty-ff-backend",
+      "stage": "adopt",
+      "initialization": "none",
+      "description": "",
+      "homepage_url": "",
+      "topics": [],
+      "visibility": "public",
+      "merge_methods": [
+        "merge",
+        "squash",
+        "rebase"
+      ],
+      "delete_branch_on_merge": false,
+      "allow_auto_merge": false,
+      "allow_update_branch": false,
+      "archived": false,
+      "features": {
+        "issues": true,
+        "discussions": false,
+        "wiki": false,
+        "projects": true
+      },
+      "provisioning_teams": {},
+      "developer_teams": {},
+      "required_checks": {}
+    }
+  }
+}

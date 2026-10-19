@@ -1,0 +1,31 @@
+{
+  "verified_at_utc": "2026-10-14T02:26:26Z",
+  "repository": "tyler180/example-go-pilot",
+  "source_commit": "b9272bfba2b1b3d382867c88d6a9f9db794202a9",
+  "deployment_run": "https://github.com/tyler180/example-go-pilot/actions/runs/38500519350",
+  "starter_release": "v0.1.0-rc.5",
+  "workflow_release": "v2.3.0-rc.3",
+  "function": {
+    "Name": "example-go-pilot",
+    "Arn": "arn:aws:lambda:us-west-2:138013422358:function:example-go-pilot",
+    "State": "Active",
+    "LastUpdateStatus": "Successful",
+    "PackageType": "Image",
+    "Architectures": [
+      "x86_64"
+    ],
+    "Role": "arn:aws:iam::138013422358:role/example-go-pilot-lambda",
+    "ImageUri": "138013422358.dkr.ecr.us-west-2.amazonaws.com/example-go-pilot@sha256:7ae2290222bce7e49ded8a228f8ad966108191325aa6472b92f5d0e523bc3593",
+    "ResolvedImageUri": "138013422358.dkr.ecr.us-west-2.amazonaws.com/example-go-pilot@sha256:7ae2290222bce7e49ded8a228f8ad966108191325aa6472b92f5d0e523bc3593"
+  },
+  "invocation": {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  },
+  "response": {
+    "greeting": "Hello, Terraform pilot!"
+  },
+  "deployment_mode": "manual main-branch dispatch; environment branch restriction; reviewers unavailable for this private repo on current billing plan",
+  "installer_audit": "read-only audit returned already-installed",
+  "dynasty_imported": false
+}
