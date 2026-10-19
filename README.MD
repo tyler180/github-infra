@@ -194,3 +194,9 @@ This updates Terraform state only; it does not create repositories, run
 bootstrap, or advance the accepted deployment record. After reconciliation,
 start a fresh run with `operation: deploy`. Ordinary deployment still rejects
 remote drift and performs live verification before advancing its accepted record.
+
+## Go application configuration
+
+See [docs-go-configuration.md](docs-go-configuration.md) to stage an inventory-based
+workflow that discovers a Go application entry point and proposes its configuration
+through a PR, with optional AI assistance for multiple executables.
