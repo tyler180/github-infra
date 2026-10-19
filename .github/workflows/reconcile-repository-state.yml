@@ -1,0 +1,95 @@
+name: Reconcile observed repository state
+on:
+  workflow_call:
+    inputs:
+      apply-role-arn:
+        type: string
+        required: true
+    secrets:
+      TF_GITHUB_PLAN_TOKEN:
+        required: true
+permissions:
+  contents: read
+  id-token: write
+# Share the deployment lock so state refresh cannot race repository deployment.
+concurrency:
+  group: github-infra-repository-state
+  cancel-in-progress: false
+jobs:
+  plan:
+    if: github.repository == 'tyler180/github-infra' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: 1.15.8
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708
+        with:
+          role-to-assume: ${{ inputs.apply-role-arn }}
+          aws-region: us-west-2
+      - name: Save and review refresh-only plan
+        env:
+          GITHUB_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
+          TF_IN_AUTOMATION: 'true'
+          TF_INPUT: 'false'
+        run: |
+          set -euo pipefail
+          test -n "$GITHUB_TOKEN"
+          terraform init -input=false -lockfile=readonly
+          terraform plan -refresh-only -input=false -lock-timeout=5m -no-color -out="$RUNNER_TEMP/refresh.tfplan"
+          terraform show -json "$RUNNER_TEMP/refresh.tfplan" > "$RUNNER_TEMP/refresh.json"
+          python3 -I scripts/validate-refresh-plan.py "$RUNNER_TEMP/refresh.json" repositories.json >> "$GITHUB_STEP_SUMMARY"
+      - id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: repository-refresh-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/refresh.tfplan
+          retention-days: 1
+          if-no-files-found: error
+  reconcile:
+    needs: plan
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          artifact-ids: ${{ needs.plan.outputs.artifact-id }}
+          path: ${{ runner.temp }}/plan
+          merge-multiple: true
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: 1.15.8
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708
+        with:
+          role-to-assume: ${{ inputs.apply-role-arn }}
+          aws-region: us-west-2
+      - name: Revalidate and apply approved state refresh
+        env:
+          GITHUB_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
+          GH_TOKEN: ${{ secrets.TF_GITHUB_PLAN_TOKEN }}
+          SOURCE_SHA: ${{ github.sha }}
+          TF_IN_AUTOMATION: 'true'
+          TF_INPUT: 'false'
+        run: |
+          set -euo pipefail
+          test -n "$GITHUB_TOKEN"
+          terraform init -input=false -lockfile=readonly
+          terraform show -json "$RUNNER_TEMP/plan/refresh.tfplan" > "$RUNNER_TEMP/refresh.json"
+          python3 -I scripts/validate-refresh-plan.py "$RUNNER_TEMP/refresh.json" repositories.json >> "$GITHUB_STEP_SUMMARY"
+          test "$(gh api repos/tyler180/github-infra/commits/main --jq '.sha')" = "$SOURCE_SHA"
+          terraform apply -input=false -lock-timeout=5m -no-color "$RUNNER_TEMP/plan/refresh.tfplan"
+          echo 'State reconciled. Run Deploy repository pilot with operation deploy to create pending repositories and verify the accepted record.' >> "$GITHUB_STEP_SUMMARY"
