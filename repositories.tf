@@ -48,9 +48,9 @@ resource "terraform_data" "contract" {
     }
     precondition {
       condition = alltrue([for repo in values(local.inventory.repositories) :
-        try(repo.profile, null) == null ? true : try(repo.profile == "go" && repo.stage == "create" && repo.initialization == "basic" && repo.visibility == "private" && repo.default_branch == "main", false)
+        try(repo.profile, null) == null ? true : try(repo.profile == "go" && repo.stage == "create" && repo.initialization == "basic" && contains(["private", "public"], repo.visibility) && repo.default_branch == "main", false)
       ])
-      error_message = "The Go profile currently requires create stage, basic initialization, private visibility and main."
+      error_message = "The Go profile currently requires create stage, basic initialization, private or public visibility and main."
     }
     precondition {
       condition = alltrue([for key, repo in local.inventory.repositories :

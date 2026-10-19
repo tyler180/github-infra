@@ -90,7 +90,8 @@ The fine-grained planning PAT with Administration read access omitted merge sett
 
 ## Automatic Go profile bootstrap
 
-Set `profile: "go"` on a basic/private/main repository entry and provide the
+Set `profile: "go"` on a repository entry with basic initialization, private or public visibility,
+and main as the default branch and provide the
 `bootstrap` object shown on `example_go_pilot` in repositories.json. The source,
 workflow and hook SHAs are approved pins; the Go patch version, code owner and
 module path are explicit. Repositories without a profile receive no source files.

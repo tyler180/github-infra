@@ -24,7 +24,7 @@
     },
     "example_go_pilot": {
       "stage": "create",
-      "visibility": "private",
+      "visibility": "public",
       "initialization": "basic",
       "default_branch": "main",
       "rename_default_branch": true,

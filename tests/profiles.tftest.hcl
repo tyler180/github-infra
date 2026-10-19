@@ -38,3 +38,27 @@ run "mixed_bootstrap_aliases_are_rejected" {
   variables { inventory_file = "tests/mixed-bootstrap-aliases.json" }
   expect_failures = [terraform_data.contract]
 }
+
+run "public_go_profile_is_supported" {
+  command = plan
+  variables { inventory_file = "tests/go-profile-public.json" }
+  assert {
+    condition     = terraform_data.contract.input.repositories.example_go_pilot.visibility == "public" && module.repositories["example_go_pilot"].managed_ruleset_id == null
+    error_message = "The Go profile must preserve public visibility without enabling protection during creation."
+  }
+}
+
+run "private_go_profile_is_supported" {
+  command = plan
+  variables { inventory_file = "examples/go-pilot/repositories.json" }
+  assert {
+    condition     = terraform_data.contract.input.repositories.example_go_pilot.visibility == "private"
+    error_message = "Private Go profile repositories must remain supported."
+  }
+}
+
+run "internal_go_profile_is_rejected" {
+  command = plan
+  variables { inventory_file = "tests/go-profile-internal.json" }
+  expect_failures = [terraform_data.contract]
+}
